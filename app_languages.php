@@ -1660,4 +1660,9 @@ $text['button-view_all']['ru-ru'] = "Показать Все";
 $text['button-view_all']['sv-se'] = "Visa Allt";
 $text['button-view_all']['uk-ua'] = "Показати всі";
 
+$text['extensions-title']['en-us'] = "Available extensions";
+$text['extensions-search']['en-us'] = "Search";
+$text['extensions-enabled']['en-us'] = "Enabled";
+$text['extensions-disabled']['en-us'] = "Disabled";
+
 ?>

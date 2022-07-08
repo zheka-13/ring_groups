@@ -1121,7 +1121,66 @@
 
 	echo "</form>";
 
+	$query = "select extension, effective_caller_id_name as name, enabled from v_extensions where domain_uuid = :domain_uuid";
+	$rows = $database->select($query, ["domain_uuid" => $_SESSION['domain_uuid']]);
+
+    foreach ($rows as $key => $row) {
+        $rows[$key]['color'] = "red";
+        $rows[$key]['title'] = $text['extensions-disabled'];
+        if ($rows[$key]['enabled'] == 'true'){
+            $rows[$key]['color'] = "green";
+            $rows[$key]['title'] = $text['extensions-enabled'];
+        }
+    }
+    ?>
+    <div id='extensions' style='width:20%;height:600px;border:1px solid black; position: fixed;top: 150px; right: 5%;background-color: white;overflow-y:scroll; '>
+    <table style='width:100%'>
+    <tr><th style='text-align:center; font-size:14px;'><?php echo $text['extensions-title']; ?></th></tr>
+    <tr><th><input type='text' v-model='search' placeholder='<?php echo $text['extensions-search']; ?>'></th></tr>
+    <tr v-for="ext in found">
+        <td style="padding: 10px;border-bottom: 1px solid gray;font-weight: bold;font-size:14px;">
+            <span class='fas fa-circle' :style="'color:'+ext.color" :title="ext.title"></span>
+            {{ ext.name }} ({{ext.extension}})
+        </td>
+    </tr>
+
+    </table>
+    </div>
+    <?php
 //include the footer
 	require_once "resources/footer.php";
 
 ?>
+<script language='JavaScript' type='text/javascript' src='/app/ring_groups/resources/js/vue.min.js'></script>
+<script>
+    new Vue({
+        el: "#extensions",
+        data: {
+            extensions : <?php echo json_encode($rows); ?>,
+            search: ""
+        },
+        computed : {
+            found : function(){
+                if (this.search.length === 0){
+                    return this.extensions;
+                }
+                var that = this,
+                    filtered_list = [];
+                for (var ext_id in this.extensions) {
+                    if (this.extensions.hasOwnProperty(ext_id)) {
+                        var item = this.extensions[ext_id];
+                        if (item.name.toLowerCase().indexOf(that.search.toLowerCase()) !== -1) {
+                            filtered_list.push(item);
+                            continue;
+                        }
+                        if (item.extension.toLowerCase().indexOf(that.search.toLowerCase()) !== -1) {
+                            filtered_list.push(item);
+                        }
+                    }
+                }
+                return filtered_list;
+            }
+        }
+    });
+
+</script>
