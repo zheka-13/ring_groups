@@ -1131,6 +1131,7 @@
             $rows[$key]['color'] = "green";
             $rows[$key]['title'] = $text['extensions-enabled'];
         }
+        $rows[$key]['name'] = !empty($row['name']) ? $row['name'] : "";
     }
     ?>
     <div id='extensions' style='width:20%;height:600px;border:1px solid black; position: fixed;top: 150px; right: 5%;background-color: white;overflow-y:scroll; '>
