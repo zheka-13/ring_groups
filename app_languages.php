@@ -1664,5 +1664,5 @@ $text['extensions-title']['en-us'] = "Available extensions";
 $text['extensions-search']['en-us'] = "Search";
 $text['extensions-enabled']['en-us'] = "Enabled";
 $text['extensions-disabled']['en-us'] = "Disabled";
-
+$text['description-limit-destinations']['en-us'] = "Warning! With strategies 'Simultaneous' and 'Enterprise' destinations are limited to";
 ?>

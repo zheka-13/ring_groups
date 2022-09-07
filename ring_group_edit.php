@@ -84,6 +84,7 @@
 		$domain_uuid = $_SESSION['domain_uuid'];
 	}
 
+
 //delete the user from the ring group
 	if (
 		$_GET["a"] == "delete"
@@ -131,7 +132,7 @@
 			}
 		}
 	}
-
+$destination_limit = 0;
 //get http post variables and set them to php variables
 	if (count($_POST) > 0) {
 
@@ -200,7 +201,12 @@
 			else if ($action == 'add') {
 				$ring_group_context = $_SESSION['domain_name'];
 			}
+        if (($ring_group_strategy == 'simultaneous' || $ring_group_strategy == 'enterprise') && !empty($_SESSION['ring_group']['destination_limit']['numeric'])){
+            $destination_limit = $_SESSION['ring_group']['destination_limit']['numeric'];
+        }
 	}
+
+
 
 //assign the user to the ring group
 	if (is_uuid($_REQUEST["user_uuid"]) && is_uuid($_REQUEST["id"]) && $_GET["a"] != "delete" && permission_exists("ring_group_edit")) {
@@ -364,8 +370,18 @@
 			foreach ($ring_group_destinations as $row) {
 				if (is_uuid($row['ring_group_destination_uuid'])) {
 					$ring_group_destination_uuid = $row['ring_group_destination_uuid'];
+                    if (!empty($destination_limit) && $y >= $destination_limit){
+                        foreach ($ring_group_destinations_delete as $key => $val){
+                            if ($val['uuid'] == $ring_group_destination_uuid){
+                                $ring_group_destinations_delete[$key]['checked'] = "true";
+                            }
+                        }
+                    }
 				}
 				else {
+                    if (!empty($destination_limit) && $y >= $destination_limit){
+                        break;
+                    }
 					$ring_group_destination_uuid = uuid();
 				}
 				if (strlen($row['destination_number']) > 0) {
@@ -492,6 +508,10 @@
 			$ring_group_enabled = $row["ring_group_enabled"];
 			$ring_group_description = $row["ring_group_description"];
 			$dialplan_uuid = $row["dialplan_uuid"];
+
+            if (($ring_group_strategy == 'simultaneous' || $ring_group_strategy == 'enterprise') && !empty($_SESSION['ring_group']['destination_limit']['numeric'])){
+                $destination_limit = $_SESSION['ring_group']['destination_limit']['numeric'];
+            }
 		}
 		unset($sql, $parameters, $row);
 		if (strlen($ring_group_timeout_app) > 0) {
@@ -526,14 +546,25 @@
 		unset($sql, $parameters);
 	}
 
+
 //add an empty row to the options array
 	if (!is_array($ring_group_destinations) || count($ring_group_destinations) == 0) {
 		$rows = $_SESSION['ring_group']['destination_add_rows']['numeric'];
+        if (!empty($destination_limit)){
+            $rows = $destination_limit;
+        }
 		$id = 0;
 		$show_destination_delete = false;
 	}
 	if (is_array($ring_group_destinations) && count($ring_group_destinations) > 0) {
 		$rows = $_SESSION['ring_group']['destination_edit_rows']['numeric'];
+        if (!empty($destination_limit)){
+            $rows = 0;
+            $free = $destination_limit - count($ring_group_destinations);
+            if ($free > 0){
+                $rows = $free;
+            }
+        }
 		$id = count($ring_group_destinations)+1;
 		$show_destination_delete = true;
 	}
@@ -826,6 +857,9 @@
 	}
 	echo "			</table>\n";
 	echo "			".$text['description-destinations']."\n";
+    if (!empty($_SESSION['ring_group']['destination_limit']['numeric'])){
+        echo "<br>".$text['description-limit-destinations']." ".$_SESSION['ring_group']['destination_limit']['numeric'].".";
+    }
 	echo "			<br />\n";
 	echo "		</td>";
 	echo "	</tr>";

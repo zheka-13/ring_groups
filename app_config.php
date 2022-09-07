@@ -170,6 +170,14 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
 		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "705983c4-b5d4-48cb-9356-30cbb7974f74";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "ring_group";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "destination_limit";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "5";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Limits the number of destination in the ring group with strategies 'Enterprise' or 'Simultaneous'";
+		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "de655030-ae71-4b53-8068-5cf0b14cf635";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "limit";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "ring_groups";
